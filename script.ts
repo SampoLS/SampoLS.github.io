@@ -9,7 +9,6 @@ function detectImage() {
     document.querySelector('.button').addEventListener('click', () => {
         drawBox();
         appendText();
-        alert('you clicked the button');
     });
 }
 function clear() {
@@ -24,7 +23,7 @@ async function appendText() {
     const classification = await model.classify(img);
     console.log(classification);
     for (let i = 0; i < classification.length; i++) {
-        if (classification[i].probability >= 0.6) {
+        if (classification[i].probability >= 0.2) {
             document.querySelector('.text').textContent += ': ' + classification[i].className;
             break;
         }
@@ -33,6 +32,7 @@ async function appendText() {
     (document.querySelector('.button') as HTMLButtonElement).style.display = 'none';
 }
 async function drawBox() {
+    document.querySelector('.button').textContent = 'Predicting...';
     const img = document.querySelector('.img') as HTMLImageElement;
     const model = await cocoSsd.load();
     const prediction = await model.detect(img);
@@ -49,7 +49,7 @@ async function drawBox() {
             box.style.width = width.toFixed() + 'px';
             box.style.height = height.toFixed() + 'px';
             document.querySelector('.box-img').appendChild(box);
-            if (prediction[i].score >= 0.6) {
+            if (prediction[i].score >= 0.9) {
                 document.querySelector('.text').textContent = prediction[i].class;
             }
         }

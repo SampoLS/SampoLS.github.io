@@ -43,7 +43,6 @@ function detectImage() {
     document.querySelector('.button').addEventListener('click', function () {
         drawBox();
         appendText();
-        alert('you clicked the button');
     });
 }
 function clear() {
@@ -67,7 +66,7 @@ function appendText() {
                     classification = _a.sent();
                     console.log(classification);
                     for (i = 0; i < classification.length; i++) {
-                        if (classification[i].probability >= 0.6) {
+                        if (classification[i].probability >= 0.2) {
                             document.querySelector('.text').textContent += ': ' + classification[i].className;
                             break;
                         }
@@ -85,6 +84,7 @@ function drawBox() {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    document.querySelector('.button').textContent = 'Predicting...';
                     img = document.querySelector('.img');
                     return [4 /*yield*/, cocoSsd.load()];
                 case 1:
@@ -105,7 +105,7 @@ function drawBox() {
                             box.style.width = width.toFixed() + 'px';
                             box.style.height = height.toFixed() + 'px';
                             document.querySelector('.box-img').appendChild(box);
-                            if (prediction[i].score >= 0.6) {
+                            if (prediction[i].score >= 0.9) {
                                 document.querySelector('.text').textContent = prediction[i].class;
                             }
                         }
