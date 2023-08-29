@@ -42,12 +42,14 @@ function main() {
 main();
 function detectImage() {
     document.querySelector('.button').addEventListener('click', function () {
-        drawBox();
-        appendText();
+        showBox();
+        showText();
     });
 }
-function clearAllBoxes() {
+function clearAllText() {
     document.querySelector('.text').textContent = '';
+}
+function clearAllBoxes() {
     var boxList = document.querySelectorAll('.draw-box');
     if (boxList.length >= 0) {
         for (var i = 0; i < boxList.length; i++) {
@@ -55,9 +57,13 @@ function clearAllBoxes() {
         }
     }
 }
-function appendText() {
+function clear() {
+    clearAllText();
+    clearAllBoxes();
+}
+function loadModel() {
     return __awaiter(this, void 0, void 0, function () {
-        var img, model, classification, i;
+        var img, model, classification;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -68,51 +74,81 @@ function appendText() {
                     return [4 /*yield*/, model.classify(img)];
                 case 2:
                     classification = _a.sent();
-                    console.log(classification);
-                    for (i = 0; i < classification.length; i++) {
-                        if (classification[i].probability >= 0.2) {
-                            document.querySelector('.text').textContent += ': ' + classification[i].className;
-                            break;
-                        }
-                    }
+                    return [2 /*return*/, classification];
+            }
+        });
+    });
+}
+function appendText(classification) {
+    for (var i = 0; i < classification.length; i++) {
+        if (classification[i].probability >= 0.2) {
+            document.querySelector('.text').textContent += ': ' + classification[i].className;
+            break;
+        }
+    }
+}
+function showText() {
+    return __awaiter(this, void 0, void 0, function () {
+        var classification;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, loadModel()];
+                case 1:
+                    classification = _a.sent();
+                    appendText(classification);
                     showUploadButton();
                     return [2 /*return*/];
             }
         });
     });
 }
-function drawBox() {
+function loadMobilenetModel() {
     return __awaiter(this, void 0, void 0, function () {
-        var img, model, prediction, i, _a, x, y, width, height, box;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var img, model, prediction;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    disableDetectButton();
                     img = document.querySelector('.img');
                     return [4 /*yield*/, cocoSsd.load()];
                 case 1:
-                    model = _b.sent();
+                    model = _a.sent();
                     return [4 /*yield*/, model.detect(img)];
                 case 2:
-                    prediction = _b.sent();
-                    console.log(prediction);
-                    for (i = 0; i < prediction.length; i++) {
-                        if (prediction[i]) {
-                            _a = prediction[i].bbox, x = _a[0], y = _a[1], width = _a[2], height = _a[3];
-                            box = document.createElement('div');
-                            box.className = 'draw-box';
-                            box.style.position = 'absolute';
-                            box.style.border = '5px solid green';
-                            box.style.left = x.toFixed() + 'px';
-                            box.style.top = y.toFixed() + 'px';
-                            box.style.width = width.toFixed() + 'px';
-                            box.style.height = height.toFixed() + 'px';
-                            document.querySelector('.box-img').appendChild(box);
-                            if (prediction[i].score >= 0.9) {
-                                document.querySelector('.text').textContent = prediction[i].class;
-                            }
-                        }
-                    }
+                    prediction = _a.sent();
+                    return [2 /*return*/, prediction];
+            }
+        });
+    });
+}
+function drawBox(prediction) {
+    for (var i = 0; i < prediction.length; i++) {
+        if (prediction[i]) {
+            var _a = prediction[i].bbox, x = _a[0], y = _a[1], width = _a[2], height = _a[3];
+            var box = document.createElement('div');
+            box.className = 'draw-box';
+            box.style.position = 'absolute';
+            box.style.border = '5px solid green';
+            box.style.left = x.toFixed() + 'px';
+            box.style.top = y.toFixed() + 'px';
+            box.style.width = width.toFixed() + 'px';
+            box.style.height = height.toFixed() + 'px';
+            document.querySelector('.box-img').appendChild(box);
+            if (prediction[i].score >= 0.9) {
+                document.querySelector('.text').textContent = prediction[i].class;
+            }
+        }
+    }
+}
+function showBox() {
+    return __awaiter(this, void 0, void 0, function () {
+        var prediction;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, loadMobilenetModel()];
+                case 1:
+                    prediction = _a.sent();
+                    drawBox(prediction);
+                    disableDetectButton();
                     return [2 /*return*/];
             }
         });
@@ -121,8 +157,6 @@ function drawBox() {
 function uploadImage() {
     var uploadInput = document.getElementById('file');
     uploadInput.addEventListener('change', function () {
-        clearAllBoxes();
-        enableDetectButton();
         if (uploadInput.files && uploadInput.files[0]) {
             var img_1 = document.querySelector('.img');
             img_1.src = URL.createObjectURL(uploadInput.files[0]);
@@ -131,6 +165,8 @@ function uploadImage() {
             };
             hideUploadButton();
         }
+        clear();
+        enableDetectButton();
     });
 }
 function showUploadButton() {
@@ -138,6 +174,10 @@ function showUploadButton() {
     button.style.display = 'none';
     button.textContent = 'DETECT';
     document.querySelector('.file').style.display = 'block';
+}
+function hideUploadButton() {
+    document.querySelector('.file').style.display = 'none';
+    document.querySelector('.button').style.display = 'block';
 }
 function disableDetectButton() {
     var button = document.querySelector('.button');
@@ -149,10 +189,6 @@ function enableDetectButton() {
     var button = document.querySelector('.button');
     button.style.backgroundColor = 'dodgerblue';
     button.disabled = false;
-}
-function hideUploadButton() {
-    document.querySelector('.file').style.display = 'none';
-    document.querySelector('.button').style.display = 'block';
 }
 function renderHTML() {
     var ui = "\n        <section class='wrapper'>\n            <div class='box-img'>\n                <img src='' class='img' />\n            </div>\n            <div class='box-text'>\n                <p class='text'></p>\n            </div>\n            <div class='box-button'>\n                <button class='button'>DETECT</button>\n                <label for='file' class='file'>\n                    <input type='file' id='file' accept='image/*' />\n                    Upload Image\n                </label>\n            </div>\n        </section>\n    ";

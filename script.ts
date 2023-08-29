@@ -8,12 +8,14 @@ main();
 
 function detectImage() {
     document.querySelector('.button').addEventListener('click', () => {
-        drawBox();
-        appendText();
+        showBox();
+        showText();
     });
 }
-function clearAllBoxes() {
+function clearAllText() {
     document.querySelector('.text').textContent = '';
+}
+function clearAllBoxes() {
     const boxList = document.querySelectorAll('.draw-box');
     if (boxList.length >= 0) {
         for (let i = 0; i < boxList.length; i++) {
@@ -21,25 +23,36 @@ function clearAllBoxes() {
         }
     }
 }
-async function appendText() {
+function clear() {
+    clearAllText();
+    clearAllBoxes();
+}
+async function loadModel() {
     const img = document.querySelector('.img') as HTMLImageElement;
     const model = await mobilenet.load();
     const classification = await model.classify(img);
-    console.log(classification);
+    return classification;
+}
+function appendText(classification) {
     for (let i = 0; i < classification.length; i++) {
         if (classification[i].probability >= 0.2) {
             document.querySelector('.text').textContent += ': ' + classification[i].className;
             break;
         }
     }
+}
+async function showText() {
+    const classification = await loadModel();
+    appendText(classification);
     showUploadButton();
 }
-async function drawBox() {
-    disableDetectButton();
+async function loadMobilenetModel() {
     const img = document.querySelector('.img') as HTMLImageElement;
     const model = await cocoSsd.load();
     const prediction = await model.detect(img);
-    console.log(prediction);
+    return prediction;
+}
+function drawBox(prediction) {
     for (let i = 0; i < prediction.length; i++) {
         if (prediction[i]) {
             const [x, y, width, height] = prediction[i].bbox;
@@ -58,12 +71,15 @@ async function drawBox() {
         }
     }
 }
+async function showBox() {
+    const prediction = await loadMobilenetModel();
+    drawBox(prediction);
+    disableDetectButton();
+}
 
 function uploadImage() {
     const uploadInput = document.getElementById('file') as HTMLInputElement;
     uploadInput.addEventListener('change', () => {
-        clearAllBoxes();
-        enableDetectButton();
         if (uploadInput.files && uploadInput.files[0]) {
             const img = document.querySelector('.img') as HTMLImageElement;
             img.src = URL.createObjectURL(uploadInput.files[0]);
@@ -72,6 +88,8 @@ function uploadImage() {
             }
             hideUploadButton();
         }
+        clear();
+        enableDetectButton();
     });
 }
 function showUploadButton() {
@@ -79,6 +97,10 @@ function showUploadButton() {
     button.style.display = 'none';
     button.textContent = 'DETECT';
     (document.querySelector('.file') as HTMLElement).style.display = 'block';
+}
+function hideUploadButton() {
+    (document.querySelector('.file') as HTMLElement).style.display = 'none';
+    (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
 }
 function disableDetectButton() {
     const button = document.querySelector('.button') as HTMLButtonElement;
@@ -90,10 +112,6 @@ function enableDetectButton() {
     const button = document.querySelector('.button') as HTMLButtonElement;
     button.style.backgroundColor = 'dodgerblue';
     button.disabled = false;
-}
-function hideUploadButton() {
-    (document.querySelector('.file') as HTMLElement).style.display = 'none';
-    (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
 }
 function renderHTML() {
     const ui = `
