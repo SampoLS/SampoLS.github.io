@@ -13,8 +13,11 @@ function detectImage() {
 }
 function clear() {
     document.querySelector('.text').textContent = '';
-    if (document.querySelector('.draw-box')) {
-        document.querySelector('.draw-box').remove();
+    const boxList = document.querySelectorAll('.draw-box');
+    if (boxList.length >= 0) {
+        for (let i = 0; i < boxList.length; i++) {
+            boxList[i].remove();
+        }
     }
 }
 async function appendText() {
@@ -30,6 +33,7 @@ async function appendText() {
     }
     (document.querySelector('.file') as HTMLElement).style.display = 'block';
     (document.querySelector('.button') as HTMLButtonElement).style.display = 'none';
+    (document.querySelector('.button') as HTMLButtonElement).textContent = 'DETECT';
 }
 async function drawBox() {
     document.querySelector('.button').textContent = 'Predicting...';
@@ -63,6 +67,7 @@ function renderUI() {
 function uploadImage() {
     const uploadInput = document.getElementById('file') as HTMLInputElement;
     uploadInput.addEventListener('change', () => {
+        clear();
         if (uploadInput.files && uploadInput.files[0]) {
             const img = document.querySelector('.img') as HTMLImageElement;
             img.src = URL.createObjectURL(uploadInput.files[0]);
@@ -71,7 +76,6 @@ function uploadImage() {
             }
             (document.querySelector('.file') as HTMLElement).style.display = 'none';
             (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
-            clear();
         }
     });
 }
