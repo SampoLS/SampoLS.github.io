@@ -134,9 +134,10 @@ function uploadImage() {
     });
 }
 function showUploadButton() {
+    var button = document.querySelector('.button');
+    button.style.display = 'none';
+    button.textContent = 'DETECT';
     document.querySelector('.file').style.display = 'block';
-    document.querySelector('.button').style.display = 'none';
-    document.querySelector('.button').textContent = 'DETECT';
 }
 function disableDetectButton() {
     var button = document.querySelector('.button');

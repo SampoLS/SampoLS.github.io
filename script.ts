@@ -75,9 +75,10 @@ function uploadImage() {
     });
 }
 function showUploadButton() {
+    const button = document.querySelector('.button') as HTMLButtonElement;
+    button.style.display = 'none';
+    button.textContent = 'DETECT';
     (document.querySelector('.file') as HTMLElement).style.display = 'block';
-    (document.querySelector('.button') as HTMLButtonElement).style.display = 'none';
-    (document.querySelector('.button') as HTMLButtonElement).textContent = 'DETECT';
 }
 function disableDetectButton() {
     const button = document.querySelector('.button') as HTMLButtonElement;
