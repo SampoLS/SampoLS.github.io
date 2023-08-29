@@ -45,7 +45,7 @@ function detectImage() {
         appendText();
     });
 }
-function clear() {
+function clearAllBoxes() {
     document.querySelector('.text').textContent = '';
     var boxList = document.querySelectorAll('.draw-box');
     if (boxList.length >= 0) {
@@ -74,9 +74,7 @@ function appendText() {
                             break;
                         }
                     }
-                    document.querySelector('.file').style.display = 'block';
-                    document.querySelector('.button').style.display = 'none';
-                    document.querySelector('.button').textContent = 'DETECT';
+                    showUploadButton();
                     return [2 /*return*/];
             }
         });
@@ -88,7 +86,7 @@ function drawBox() {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    document.querySelector('.button').textContent = 'Predicting...';
+                    disableDetectButton();
                     img = document.querySelector('.img');
                     return [4 /*yield*/, cocoSsd.load()];
                 case 1:
@@ -126,17 +124,37 @@ function renderUI() {
 function uploadImage() {
     var uploadInput = document.getElementById('file');
     uploadInput.addEventListener('change', function () {
-        clear();
+        clearAllBoxes();
+        enableDetectButton();
         if (uploadInput.files && uploadInput.files[0]) {
             var img_1 = document.querySelector('.img');
             img_1.src = URL.createObjectURL(uploadInput.files[0]);
             img_1.onload = function () {
                 URL.revokeObjectURL(img_1.src);
             };
-            document.querySelector('.file').style.display = 'none';
-            document.querySelector('.button').style.display = 'block';
+            hideUploadButton();
         }
     });
+}
+function showUploadButton() {
+    document.querySelector('.file').style.display = 'block';
+    document.querySelector('.button').style.display = 'none';
+    document.querySelector('.button').textContent = 'DETECT';
+}
+function disableDetectButton() {
+    var button = document.querySelector('.button');
+    button.textContent = 'Predicting...';
+    button.disabled = true;
+    button.style.backgroundColor = 'lightblue';
+}
+function enableDetectButton() {
+    var button = document.querySelector('.button');
+    button.style.backgroundColor = 'dodgerblue';
+    button.disabled = false;
+}
+function hideUploadButton() {
+    document.querySelector('.file').style.display = 'none';
+    document.querySelector('.button').style.display = 'block';
 }
 function renderHTML() {
     var ui = "\n        <section class='wrapper'>\n            <div class='box-img'>\n                <img src='' class='img' />\n            </div>\n            <div class='box-text'>\n                <p class='text'></p>\n            </div>\n            <div class='box-button'>\n                <button class='button'>DETECT</button>\n                <label for='file' class='file'>\n                    <input type='file' id='file' accept='image/*' />\n                    Upload Image\n                </label>\n            </div>\n        </section>\n    ";

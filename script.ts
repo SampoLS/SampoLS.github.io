@@ -11,7 +11,7 @@ function detectImage() {
         appendText();
     });
 }
-function clear() {
+function clearAllBoxes() {
     document.querySelector('.text').textContent = '';
     const boxList = document.querySelectorAll('.draw-box');
     if (boxList.length >= 0) {
@@ -31,12 +31,10 @@ async function appendText() {
             break;
         }
     }
-    (document.querySelector('.file') as HTMLElement).style.display = 'block';
-    (document.querySelector('.button') as HTMLButtonElement).style.display = 'none';
-    (document.querySelector('.button') as HTMLButtonElement).textContent = 'DETECT';
+    showUploadButton();
 }
 async function drawBox() {
-    document.querySelector('.button').textContent = 'Predicting...';
+    disableDetectButton();
     const img = document.querySelector('.img') as HTMLImageElement;
     const model = await cocoSsd.load();
     const prediction = await model.detect(img);
@@ -67,17 +65,37 @@ function renderUI() {
 function uploadImage() {
     const uploadInput = document.getElementById('file') as HTMLInputElement;
     uploadInput.addEventListener('change', () => {
-        clear();
+        clearAllBoxes();
+        enableDetectButton();
         if (uploadInput.files && uploadInput.files[0]) {
             const img = document.querySelector('.img') as HTMLImageElement;
             img.src = URL.createObjectURL(uploadInput.files[0]);
             img.onload = () => {
                 URL.revokeObjectURL(img.src);
             }
-            (document.querySelector('.file') as HTMLElement).style.display = 'none';
-            (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
+            hideUploadButton();
         }
     });
+}
+function showUploadButton() {
+    (document.querySelector('.file') as HTMLElement).style.display = 'block';
+    (document.querySelector('.button') as HTMLButtonElement).style.display = 'none';
+    (document.querySelector('.button') as HTMLButtonElement).textContent = 'DETECT';
+}
+function disableDetectButton() {
+    const button = document.querySelector('.button') as HTMLButtonElement;
+    button.textContent = 'Predicting...';
+    button.disabled = true;
+    button.style.backgroundColor = 'lightblue';
+}
+function enableDetectButton() {
+    const button = document.querySelector('.button') as HTMLButtonElement;
+    button.style.backgroundColor = 'dodgerblue';
+    button.disabled = false;
+}
+function hideUploadButton() {
+    (document.querySelector('.file') as HTMLElement).style.display = 'none';
+    (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
 }
 function renderHTML() {
     const ui = `
