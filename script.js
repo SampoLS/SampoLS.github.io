@@ -116,7 +116,7 @@ function drawBox() {
     });
 }
 function renderUI() {
-    renderImageBox();
+    renderHTML();
     uploadImage();
 }
 function uploadImage() {
@@ -134,7 +134,7 @@ function uploadImage() {
         }
     });
 }
-function renderImageBox() {
+function renderHTML() {
     var ui = "\n        <section class='wrapper'>\n            <div class='box-img'>\n                <img src='' class='img' />\n            </div>\n            <div class='box-text'>\n                <p class='text'></p>\n            </div>\n            <div class='box-button'>\n                <button class='button'>DETECT</button>\n                <label for='file' class='file'>\n                    <input type='file' id='file' accept='image/*' />\n                    Upload Image\n                </label>\n            </div>\n        </section>\n    ";
     document.getElementById('root').innerHTML = ui;
 }

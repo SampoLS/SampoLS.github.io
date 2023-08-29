@@ -57,7 +57,7 @@ async function drawBox() {
 }
 
 function renderUI() {
-    renderImageBox();
+    renderHTML();
     uploadImage();
 }
 function uploadImage() {
@@ -75,7 +75,7 @@ function uploadImage() {
         }
     });
 }
-function renderImageBox() {
+function renderHTML() {
     const ui = `
         <section class='wrapper'>
             <div class='box-img'>
