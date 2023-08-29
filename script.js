@@ -35,7 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 function main() {
-    renderUI();
+    renderHTML();
+    uploadImage();
     detectImage();
 }
 main();
@@ -116,10 +117,6 @@ function drawBox() {
             }
         });
     });
-}
-function renderUI() {
-    renderHTML();
-    uploadImage();
 }
 function uploadImage() {
     var uploadInput = document.getElementById('file');

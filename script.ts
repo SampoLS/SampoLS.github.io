@@ -1,5 +1,6 @@
 function main() {
-    renderUI();
+    renderHTML();
+    uploadImage();
     detectImage();
 }
 
@@ -58,10 +59,6 @@ async function drawBox() {
     }
 }
 
-function renderUI() {
-    renderHTML();
-    uploadImage();
-}
 function uploadImage() {
     const uploadInput = document.getElementById('file') as HTMLInputElement;
     uploadInput.addEventListener('change', () => {
