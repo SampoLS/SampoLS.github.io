@@ -43,13 +43,14 @@ function detectImage() {
     document.querySelector('.button').addEventListener('click', function () {
         drawBox();
         appendText();
+        alert('you clicked the button');
     });
 }
 function clear() {
     document.querySelector('.text').textContent = '';
-    console.log(document.querySelector('.draw-box'));
-    if (document.querySelector('.draw-box'))
+    if (document.querySelector('.draw-box')) {
         document.querySelector('.draw-box').remove();
+    }
 }
 function appendText() {
     return __awaiter(this, void 0, void 0, function () {

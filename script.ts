@@ -9,6 +9,7 @@ function detectImage() {
     document.querySelector('.button').addEventListener('click', () => {
         drawBox();
         appendText();
+        alert('you clicked the button');
     });
 }
 function clear() {
