@@ -34,20 +34,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var button = document.querySelector('.button');
+var text = document.querySelector('.text');
+var img = document.querySelector('.img');
+var fileLabel = document.querySelector('.file');
 function main() {
-    renderHTML();
     uploadImage();
     detectImage();
 }
 main();
 function detectImage() {
-    document.querySelector('.button').addEventListener('click', function () {
+    button.addEventListener('click', function () {
         showBoxes();
         showText();
     });
 }
 function clearAllText() {
-    document.querySelector('.text').textContent = '';
+    text.textContent = '';
 }
 function clearAllBoxes() {
     var boxList = document.querySelectorAll('.draw-box');
@@ -63,12 +66,10 @@ function clear() {
 }
 function loadModel() {
     return __awaiter(this, void 0, void 0, function () {
-        var img, model, classification;
+        var model, classification;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    img = document.querySelector('.img');
-                    return [4 /*yield*/, mobilenet.load()];
+                case 0: return [4 /*yield*/, mobilenet.load()];
                 case 1:
                     model = _a.sent();
                     return [4 /*yield*/, model.classify(img)];
@@ -82,7 +83,7 @@ function loadModel() {
 function appendText(classification) {
     for (var i = 0; i < classification.length; i++) {
         if (classification[i].probability >= 0.6) {
-            document.querySelector('.text').textContent += ': ' + classification[i].className;
+            text.textContent += ': ' + classification[i].className;
             break;
         }
     }
@@ -104,12 +105,10 @@ function showText() {
 }
 function loadMobilenetModel() {
     return __awaiter(this, void 0, void 0, function () {
-        var img, model, prediction;
+        var model, prediction;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    img = document.querySelector('.img');
-                    return [4 /*yield*/, cocoSsd.load()];
+                case 0: return [4 /*yield*/, cocoSsd.load()];
                 case 1:
                     model = _a.sent();
                     return [4 /*yield*/, model.detect(img)];
@@ -134,7 +133,7 @@ function drawBoxes(prediction) {
             box.style.height = height.toFixed() + 'px';
             document.querySelector('.box-img').appendChild(box);
             if (prediction[i].score >= 0.9) {
-                document.querySelector('.text').textContent = prediction[i].class;
+                text.textContent = prediction[i].class;
             }
         }
     }
@@ -159,11 +158,8 @@ function uploadImage() {
     var uploadInput = document.getElementById('file');
     uploadInput.addEventListener('change', function () {
         if (uploadInput.files && uploadInput.files[0]) {
-            var img_1 = document.querySelector('.img');
-            img_1.src = URL.createObjectURL(uploadInput.files[0]);
-            img_1.onload = function () {
-                URL.revokeObjectURL(img_1.src);
-            };
+            img.src = URL.createObjectURL(uploadInput.files[0]);
+            img.onload = function () { URL.revokeObjectURL(img.src); };
             hideUploadButton();
         }
         clear();
@@ -171,27 +167,20 @@ function uploadImage() {
     });
 }
 function showUploadButton() {
-    var button = document.querySelector('.button');
     button.style.display = 'none';
     button.textContent = 'DETECT';
-    document.querySelector('.file').style.display = 'block';
+    fileLabel.style.display = 'block';
 }
 function hideUploadButton() {
-    document.querySelector('.file').style.display = 'none';
-    document.querySelector('.button').style.display = 'block';
+    fileLabel.style.display = 'none';
+    button.style.display = 'block';
 }
 function disableDetectButtonWhenPredicting() {
-    var button = document.querySelector('.button');
     button.textContent = 'PREDICTING...';
     button.disabled = true;
     button.style.backgroundColor = 'lightblue';
 }
 function enableDetectButtonAfterUploadImage() {
-    var button = document.querySelector('.button');
     button.style.backgroundColor = 'dodgerblue';
     button.disabled = false;
-}
-function renderHTML() {
-    var ui = "\n        <section class='wrapper'>\n            <div class='box-img'>\n                <img src='' class='img' />\n            </div>\n            <div class='box-text'>\n                <p class='text'></p>\n            </div>\n            <div class='box-button'>\n                <button class='button'>DETECT</button>\n                <label for='file' class='file'>\n                    <input type='file' id='file' accept='image/*' />\n                    Upload Image\n                </label>\n            </div>\n        </section>\n    ";
-    document.getElementById('root').innerHTML = ui;
 }
