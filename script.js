@@ -42,7 +42,7 @@ function main() {
 main();
 function detectImage() {
     document.querySelector('.button').addEventListener('click', function () {
-        showBox();
+        showBoxes();
         showText();
     });
 }
@@ -120,7 +120,7 @@ function loadMobilenetModel() {
         });
     });
 }
-function drawBox(prediction) {
+function drawBoxes(prediction) {
     for (var i = 0; i < prediction.length; i++) {
         if (prediction[i]) {
             var _a = prediction[i].bbox, x = _a[0], y = _a[1], width = _a[2], height = _a[3];
@@ -139,16 +139,17 @@ function drawBox(prediction) {
         }
     }
 }
-function showBox() {
+function showBoxes() {
     return __awaiter(this, void 0, void 0, function () {
         var prediction;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, loadMobilenetModel()];
+                case 0:
+                    disableDetectButtonWhenPredicting();
+                    return [4 /*yield*/, loadMobilenetModel()];
                 case 1:
                     prediction = _a.sent();
-                    drawBox(prediction);
-                    disableDetectButton();
+                    drawBoxes(prediction);
                     return [2 /*return*/];
             }
         });
@@ -166,7 +167,7 @@ function uploadImage() {
             hideUploadButton();
         }
         clear();
-        enableDetectButton();
+        enableDetectButtonAfterUploadImage();
     });
 }
 function showUploadButton() {
@@ -179,13 +180,13 @@ function hideUploadButton() {
     document.querySelector('.file').style.display = 'none';
     document.querySelector('.button').style.display = 'block';
 }
-function disableDetectButton() {
+function disableDetectButtonWhenPredicting() {
     var button = document.querySelector('.button');
     button.textContent = 'Predicting...';
     button.disabled = true;
     button.style.backgroundColor = 'lightblue';
 }
-function enableDetectButton() {
+function enableDetectButtonAfterUploadImage() {
     var button = document.querySelector('.button');
     button.style.backgroundColor = 'dodgerblue';
     button.disabled = false;

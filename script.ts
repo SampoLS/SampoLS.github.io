@@ -8,7 +8,7 @@ main();
 
 function detectImage() {
     document.querySelector('.button').addEventListener('click', () => {
-        showBox();
+        showBoxes();
         showText();
     });
 }
@@ -52,7 +52,7 @@ async function loadMobilenetModel() {
     const prediction = await model.detect(img);
     return prediction;
 }
-function drawBox(prediction) {
+function drawBoxes(prediction) {
     for (let i = 0; i < prediction.length; i++) {
         if (prediction[i]) {
             const [x, y, width, height] = prediction[i].bbox;
@@ -71,10 +71,10 @@ function drawBox(prediction) {
         }
     }
 }
-async function showBox() {
+async function showBoxes() {
+    disableDetectButtonWhenPredicting();
     const prediction = await loadMobilenetModel();
-    drawBox(prediction);
-    disableDetectButton();
+    drawBoxes(prediction);
 }
 
 function uploadImage() {
@@ -89,7 +89,7 @@ function uploadImage() {
             hideUploadButton();
         }
         clear();
-        enableDetectButton();
+        enableDetectButtonAfterUploadImage();
     });
 }
 function showUploadButton() {
@@ -102,13 +102,13 @@ function hideUploadButton() {
     (document.querySelector('.file') as HTMLElement).style.display = 'none';
     (document.querySelector('.button') as HTMLButtonElement).style.display = 'block';
 }
-function disableDetectButton() {
+function disableDetectButtonWhenPredicting() {
     const button = document.querySelector('.button') as HTMLButtonElement;
     button.textContent = 'Predicting...';
     button.disabled = true;
     button.style.backgroundColor = 'lightblue';
 }
-function enableDetectButton() {
+function enableDetectButtonAfterUploadImage() {
     const button = document.querySelector('.button') as HTMLButtonElement;
     button.style.backgroundColor = 'dodgerblue';
     button.disabled = false;
