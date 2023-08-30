@@ -182,7 +182,7 @@ function hideUploadButton() {
 }
 function disableDetectButtonWhenPredicting() {
     var button = document.querySelector('.button');
-    button.textContent = 'Predicting...';
+    button.textContent = 'PREDICTING...';
     button.disabled = true;
     button.style.backgroundColor = 'lightblue';
 }
