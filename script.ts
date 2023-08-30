@@ -35,7 +35,7 @@ async function loadModel() {
 }
 function appendText(classification) {
     for (let i = 0; i < classification.length; i++) {
-        if (classification[i].probability >= 0.2) {
+        if (classification[i].probability >= 0.6) {
             document.querySelector('.text').textContent += ': ' + classification[i].className;
             break;
         }
