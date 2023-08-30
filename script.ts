@@ -1,5 +1,5 @@
 const button = document.querySelector('.button') as HTMLButtonElement;
-const text = document.querySelector('.text');
+const text = document.querySelector('.text') as HTMLElement;
 const img = document.querySelector('.img') as HTMLImageElement;
 const fileLabel = document.querySelector('.file') as HTMLInputElement;
 
@@ -31,51 +31,55 @@ function clear() {
     clearAllText();
     clearAllBoxes();
 }
-async function loadModel() {
+async function laodMobilenetLoad() {
     const model = await mobilenet.load();
     const classification = await model.classify(img);
+    console.log(classification);
     return classification;
 }
 function appendText(classification) {
     for (let i = 0; i < classification.length; i++) {
-        if (classification[i].probability >= 0.6) {
+        if (classification[i].probability >= 0.2) {
             text.textContent += ': ' + classification[i].className;
             break;
         }
     }
 }
 async function showText() {
-    const classification = await loadModel();
+    const classification = await laodMobilenetLoad();
     appendText(classification);
     showUploadButton();
 }
-async function loadMobilenetModel() {
+async function loadCocoModel() {
     const model = await cocoSsd.load();
     const prediction = await model.detect(img);
     return prediction;
 }
+function box(prediction) {
+    const [x, y, width, height] = prediction.bbox;
+    const div = document.createElement('div');
+    div.className = 'draw-box';
+    div.style.position = 'absolute';
+    div.style.border = '5px solid green';
+    div.style.left = x.toFixed() + 'px';
+    div.style.top = y.toFixed() + 'px';
+    div.style.width = width.toFixed() + 'px';
+    div.style.height = height.toFixed() + 'px';
+    return div;
+}
 function drawBoxes(prediction) {
     for (let i = 0; i < prediction.length; i++) {
         if (prediction[i]) {
-            const [x, y, width, height] = prediction[i].bbox;
-            const box = document.createElement('div');
-            box.className = 'draw-box';
-            box.style.position = 'absolute';
-            box.style.border = '5px solid green';
-            box.style.left = x.toFixed() + 'px';
-            box.style.top = y.toFixed() + 'px';
-            box.style.width = width.toFixed() + 'px';
-            box.style.height = height.toFixed() + 'px';
-            document.querySelector('.box-img').appendChild(box);
-            if (prediction[i].score >= 0.9) {
-                text.textContent = prediction[i].class;
-            }
+            const div = box(prediction[i]);
+            document.querySelector('.box-img').appendChild(div);
+            if (prediction[i].score >= 0.85) { text.textContent += ' ' + prediction[i].class; }
         }
     }
 }
 async function showBoxes() {
     disableDetectButtonWhenPredicting();
-    const prediction = await loadMobilenetModel();
+    const prediction = await loadCocoModel();
+    console.log(prediction);
     drawBoxes(prediction);
 }
 

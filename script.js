@@ -64,7 +64,7 @@ function clear() {
     clearAllText();
     clearAllBoxes();
 }
-function loadModel() {
+function laodMobilenetLoad() {
     return __awaiter(this, void 0, void 0, function () {
         var model, classification;
         return __generator(this, function (_a) {
@@ -75,6 +75,7 @@ function loadModel() {
                     return [4 /*yield*/, model.classify(img)];
                 case 2:
                     classification = _a.sent();
+                    console.log(classification);
                     return [2 /*return*/, classification];
             }
         });
@@ -82,7 +83,7 @@ function loadModel() {
 }
 function appendText(classification) {
     for (var i = 0; i < classification.length; i++) {
-        if (classification[i].probability >= 0.6) {
+        if (classification[i].probability >= 0.2) {
             text.textContent += ': ' + classification[i].className;
             break;
         }
@@ -93,7 +94,7 @@ function showText() {
         var classification;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, loadModel()];
+                case 0: return [4 /*yield*/, laodMobilenetLoad()];
                 case 1:
                     classification = _a.sent();
                     appendText(classification);
@@ -103,7 +104,7 @@ function showText() {
         });
     });
 }
-function loadMobilenetModel() {
+function loadCocoModel() {
     return __awaiter(this, void 0, void 0, function () {
         var model, prediction;
         return __generator(this, function (_a) {
@@ -119,21 +120,25 @@ function loadMobilenetModel() {
         });
     });
 }
+function box(prediction) {
+    var _a = prediction.bbox, x = _a[0], y = _a[1], width = _a[2], height = _a[3];
+    var div = document.createElement('div');
+    div.className = 'draw-box';
+    div.style.position = 'absolute';
+    div.style.border = '5px solid green';
+    div.style.left = x.toFixed() + 'px';
+    div.style.top = y.toFixed() + 'px';
+    div.style.width = width.toFixed() + 'px';
+    div.style.height = height.toFixed() + 'px';
+    return div;
+}
 function drawBoxes(prediction) {
     for (var i = 0; i < prediction.length; i++) {
         if (prediction[i]) {
-            var _a = prediction[i].bbox, x = _a[0], y = _a[1], width = _a[2], height = _a[3];
-            var box = document.createElement('div');
-            box.className = 'draw-box';
-            box.style.position = 'absolute';
-            box.style.border = '5px solid green';
-            box.style.left = x.toFixed() + 'px';
-            box.style.top = y.toFixed() + 'px';
-            box.style.width = width.toFixed() + 'px';
-            box.style.height = height.toFixed() + 'px';
-            document.querySelector('.box-img').appendChild(box);
-            if (prediction[i].score >= 0.9) {
-                text.textContent = prediction[i].class;
+            var div = box(prediction[i]);
+            document.querySelector('.box-img').appendChild(div);
+            if (prediction[i].score >= 0.85) {
+                text.textContent += ' ' + prediction[i].class;
             }
         }
     }
@@ -145,9 +150,10 @@ function showBoxes() {
             switch (_a.label) {
                 case 0:
                     disableDetectButtonWhenPredicting();
-                    return [4 /*yield*/, loadMobilenetModel()];
+                    return [4 /*yield*/, loadCocoModel()];
                 case 1:
                     prediction = _a.sent();
+                    console.log(prediction);
                     drawBoxes(prediction);
                     return [2 /*return*/];
             }
