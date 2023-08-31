@@ -160,11 +160,15 @@ function showBoxes() {
         });
     });
 }
-function uploadImage() {
+function getUploadButton() {
     var uploadInput = document.getElementById('file');
-    uploadInput.addEventListener('change', function () {
-        if (uploadInput.files && uploadInput.files[0]) {
-            img.src = URL.createObjectURL(uploadInput.files[0]);
+    return uploadInput;
+}
+function uploadImage() {
+    var uploadInputAsButton = getUploadButton();
+    uploadInputAsButton.addEventListener('change', function () {
+        if (uploadInputAsButton.files && uploadInputAsButton.files[0]) {
+            img.src = URL.createObjectURL(uploadInputAsButton.files[0]);
             img.onload = function () { URL.revokeObjectURL(img.src); };
             hideUploadButton();
         }

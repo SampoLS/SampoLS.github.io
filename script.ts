@@ -82,12 +82,15 @@ async function showBoxes() {
     console.log(prediction);
     drawBoxes(prediction);
 }
-
+function getUploadButton() {
+    const fileInput = document.getElementById('file') as HTMLInputElement;
+    return fileInput;
+}
 function uploadImage() {
-    const uploadInput = document.getElementById('file') as HTMLInputElement;
-    uploadInput.addEventListener('change', () => {
-        if (uploadInput.files && uploadInput.files[0]) {
-            img.src = URL.createObjectURL(uploadInput.files[0]);
+    const fileInputAsButton = getUploadButton();
+    fileInputAsButton.addEventListener('change', () => {
+        if (fileInputAsButton.files && fileInputAsButton.files[0]) {
+            img.src = URL.createObjectURL(fileInputAsButton.files[0]);
             img.onload = () => { URL.revokeObjectURL(img.src); }
             hideUploadButton();
         }
