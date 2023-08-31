@@ -64,7 +64,7 @@ function clear() {
     clearAllText();
     clearAllBoxes();
 }
-function laodMobilenetLoad() {
+function loadMobilenetModel() {
     return __awaiter(this, void 0, void 0, function () {
         var model, classification;
         return __generator(this, function (_a) {
@@ -94,7 +94,7 @@ function showText() {
         var classification;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, laodMobilenetLoad()];
+                case 0: return [4 /*yield*/, loadMobilenetModel()];
                 case 1:
                     classification = _a.sent();
                     appendText(classification);
@@ -161,14 +161,14 @@ function showBoxes() {
     });
 }
 function getUploadButton() {
-    var uploadInput = document.getElementById('file');
-    return uploadInput;
+    var fileInput = document.getElementById('file');
+    return fileInput;
 }
 function uploadImage() {
-    var uploadInputAsButton = getUploadButton();
-    uploadInputAsButton.addEventListener('change', function () {
-        if (uploadInputAsButton.files && uploadInputAsButton.files[0]) {
-            img.src = URL.createObjectURL(uploadInputAsButton.files[0]);
+    var fileInputAsButton = getUploadButton();
+    fileInputAsButton.addEventListener('change', function () {
+        if (fileInputAsButton.files && fileInputAsButton.files[0]) {
+            img.src = URL.createObjectURL(fileInputAsButton.files[0]);
             img.onload = function () { URL.revokeObjectURL(img.src); };
             hideUploadButton();
         }

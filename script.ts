@@ -31,7 +31,7 @@ function clear() {
     clearAllText();
     clearAllBoxes();
 }
-async function laodMobilenetLoad() {
+async function loadMobilenetModel() {
     const model = await mobilenet.load();
     const classification = await model.classify(img);
     console.log(classification);
@@ -46,7 +46,7 @@ function appendText(classification) {
     }
 }
 async function showText() {
-    const classification = await laodMobilenetLoad();
+    const classification = await loadMobilenetModel();
     appendText(classification);
     showUploadButton();
 }
